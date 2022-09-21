@@ -1,0 +1,26 @@
+{
+  "name": "bertoost/elasticemail-mailer",
+  "description": "ElasticEmail Symfony Mailer",
+  "keywords": [],
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Bert Oost",
+      "email": "hello@bertoost.com"
+    }
+  ],
+  "require": {
+    "php": ">=8.1",
+    "symfony/mailer": "^5.4|^6.0",
+    "elasticemail/elasticemail-php": "^4.0.20"
+  },
+  "autoload": {
+    "psr-4": {
+      "bertoost\\Mailer\\ElasticEmail\\": ""
+    },
+    "exclude-from-classmap": [
+      "/Tests/"
+    ]
+  },
+  "minimum-stability": "dev"
+}
