@@ -95,8 +95,10 @@ class ElasticEmailApiTransport extends AbstractApiTransport
         }
 
         $replyTo = [];
-        foreach ($email->getReplyTo() as $address) {
-            $replyTo[] = $this->formatAddress($address);
+        if (null !== ($addresses = $email->getReplyTo())) {
+            foreach ($addresses as $replyEmail => $replyName) {
+                $replyTo[] = $this->formatAddress($replyEmail, $replyName);
+            }
         }
 
         return new EmailTransactionalMessageData([
