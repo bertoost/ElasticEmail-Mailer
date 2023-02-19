@@ -52,7 +52,7 @@ class ElasticEmailApiTransport extends AbstractApiTransport
     protected function doSendApi(SentMessage $sentMessage, Email $email, Envelope $envelope): ResponseInterface
     {
         $request = $this->api->emailsTransactionalPostRequest($this->getPayload($email));
-        $url = sprintf('%s%s', $this->getEndpoint(), $request->getRequestTarget());
+        $url = sprintf('https://%s%s', $this->getEndpoint(), $request->getRequestTarget());
 
         $response = $this->client->request($request->getMethod(), $url, [
             'headers' => $request->getHeaders(),
