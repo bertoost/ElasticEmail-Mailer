@@ -1,5 +1,11 @@
 # Elastic Email Symfony Mailer Changelog
 
+## v1.0.2 - 2023-02-19
+
+### Changed
+
+- Fixed sending API Transport calls over https instead of none
+
 ## v1.0.1 - 2022-09-25
 
 ### Changed
