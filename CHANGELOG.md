@@ -1,5 +1,12 @@
 # Elastic Email Symfony Mailer Changelog
 
+## v1.0.3 - 2023-02-20
+
+### Changed
+
+- Fixed transport API build email payload correctly  
+  _Non-empty attachments and headers_
+
 ## v1.0.2 - 2023-02-19
 
 ### Changed

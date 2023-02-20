@@ -4,6 +4,7 @@ namespace bertoost\Mailer\ElasticEmail\Transport;
 
 use ElasticEmail\Api\EmailsApi;
 use ElasticEmail\Configuration;
+use ElasticEmail\Model\BodyContentType;
 use ElasticEmail\Model\BodyPart;
 use ElasticEmail\Model\EmailContent;
 use ElasticEmail\Model\EmailTransactionalMessageData;
@@ -96,22 +97,33 @@ class ElasticEmailApiTransport extends AbstractApiTransport
 
         $replyTo = [];
         if (null !== ($addresses = $email->getReplyTo())) {
-            foreach ($addresses as $replyEmail => $replyName) {
-                $replyTo[] = $this->formatAddress($replyEmail, $replyName);
+            foreach ($addresses as $address) {
+                $replyTo[] = $this->formatAddress($address);
             }
         }
 
-        return new EmailTransactionalMessageData([
-            'recipients' => $this->buildRecipients($email),
-            'content' => new EmailContent([
-                'body' => $this->buildBody($email),
-                'from' => implode(', ', $from),
-                'subject' => $email->getSubject(),
-                'attachments' => $this->buildAttachments($email),
-                'headers' => $this->buildHeaders($email),
-                'reply_to' => !empty($replyTo) ? implode(', ', $replyTo) : null,
-            ]),
-        ]);
+        $content = (new EmailContent())
+            ->setSubject($email->getSubject())
+            ->setBody($this->buildBody($email))
+            ->setFrom(implode(', ', $from));
+
+        if (null !== ($attachments = $this->buildAttachments($email))) {
+            $content->setAttachments($attachments);
+        }
+
+        if (null !== ($headers = $this->buildHeaders($email))) {
+            $content->setHeaders($headers);
+        }
+
+        if (!empty($replyTo)) {
+            $content->setReplyTo(implode(', ', $replyTo));
+        } else {
+            $content->setReplyTo(implode(', ', $from));
+        }
+
+        return (new EmailTransactionalMessageData())
+            ->setRecipients($this->buildRecipients($email))
+            ->setContent($content);
     }
 
     private function buildRecipients(Email $email): TransactionalRecipient
@@ -131,11 +143,10 @@ class ElasticEmailApiTransport extends AbstractApiTransport
             $bccs[] = $this->formatAddress($address);
         }
 
-        return new TransactionalRecipient([
-            'to' => !empty($tos) ? $tos : null,
-            'cc' => !empty($ccs) ? $ccs : null,
-            'bcc' => !empty($bccs) ? $bccs : null,
-        ]);
+        return (new TransactionalRecipient())
+            ->setTo($tos)
+            ->setCc($ccs)
+            ->setBcc($bccs);
     }
 
     /**
@@ -146,43 +157,45 @@ class ElasticEmailApiTransport extends AbstractApiTransport
         $body = [];
 
         if (!empty($email->getTextBody())) {
-            $body[] = new BodyPart([
-                'content_type' => 'PlainText',
-                'content' => $email->getTextBody(),
-            ]);
+            $body[] = (new BodyPart())
+                ->setContent($email->getTextBody())
+                ->setContentType(BodyContentType::PLAIN_TEXT);
         }
 
         if (!empty($email->getHtmlBody())) {
-            $body[] = new BodyPart([
-                'content_type' => 'HTML',
-                'content' => $email->getHtmlBody(),
-            ]);
+            $body[] = (new BodyPart())
+                ->setContent($email->getHtmlBody())
+                ->setContentType(BodyContentType::HTML);
         }
 
         return $body;
     }
 
     /**
-     * @return MessageAttachment[]
+     * @return MessageAttachment[]|null
      */
-    private function buildAttachments(Email $email): array
+    private function buildAttachments(Email $email): ?array
     {
-        $list = [];
+        $attachments = $email->getAttachments();
+        if (!empty($attachments)) {
+            $list = [];
 
-        foreach ($email->getAttachments() as $attachment) {
-            $headers = $attachment->getPreparedHeaders();
+            foreach ($email->getAttachments() as $attachment) {
+                $headers = $attachment->getPreparedHeaders();
 
-            $list[] = new MessageAttachment([
-                'name' => $headers->getHeaderParameter('Content-Disposition', 'name'),
-                'content_type' => $headers->get('Content-Type')->getBody(),
-                'binary_content' => $attachment->bodyToString(),
-            ]);
+                $list[] = (new MessageAttachment())
+                    ->setName($headers->getHeaderParameter('Content-Disposition', 'name'))
+                    ->setContentType($headers->get('Content-Type')->getBody())
+                    ->setBinaryContent($attachment->bodyToString());
+            }
+
+            return $list;
         }
 
-        return $list;
+        return null;
     }
 
-    private function buildHeaders(Email $email): array
+    private function buildHeaders(Email $email): ?array
     {
         $list = [];
 
@@ -195,7 +208,7 @@ class ElasticEmailApiTransport extends AbstractApiTransport
             $list[$header->getName()] = $header->getBodyAsString();
         }
 
-        return $list;
+        return !empty($list) ? $list : null;
     }
 
     private function formatAddress(Address $address): string
