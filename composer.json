@@ -1,5 +1,6 @@
 {
   "name": "bertoost/elasticemail-mailer",
+  "type": "symfony-bundle",
   "description": "ElasticEmail Symfony Mailer",
   "keywords": [],
   "license": "MIT",
@@ -11,16 +12,20 @@
   ],
   "require": {
     "php": ">=8.1",
-    "symfony/mailer": "^5.4|^6.0",
+    "symfony/mailer": "^5.4|^6.0|^7.0",
+    "symfony/http-client": "^5.4|^6.0|^7.0",
     "elasticemail/elasticemail-php": "^4.0.20"
   },
   "autoload": {
     "psr-4": {
-      "bertoost\\Mailer\\ElasticEmail\\": ""
-    },
-    "exclude-from-classmap": [
-      "/Tests/"
-    ]
+      "bertoost\\Mailer\\ElasticEmail\\": "src/"
+    }
   },
-  "minimum-stability": "dev"
+  "autoload-dev": {
+    "psr-4": {
+      "bertoost\\Mailer\\ElasticEmail\\Tests\\": "tests/"
+    }
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true
 }

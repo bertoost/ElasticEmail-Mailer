@@ -1,5 +1,13 @@
 # Elastic Email Symfony Mailer Changelog
 
+## v1.1.0 - 2024-04-14
+
+### Changed
+
+- Transformed mailer bridge into a full Symfony bundle
+- Added service configuration to tag the transport
+- Tested and support MAILER_DSN from Symfony's Mailer component correctly ([#1](https://github.com/bertoost/ElasticEmail-Mailer/issues/1))
+
 ## v1.0.3 - 2023-02-20
 
 ### Changed

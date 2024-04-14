@@ -1,0 +1,4 @@
+services:
+  bertoost\Mailer\ElasticEmail\Transport\ElasticEmailTransportFactory:
+    tags:
+      - { name: mailer.transport_factory }
