@@ -1,4 +1,6 @@
 services:
   bertoost\Mailer\ElasticEmail\Transport\ElasticEmailTransportFactory:
+    arguments:
+      - "@event_dispatcher"
     tags:
       - { name: mailer.transport_factory }
