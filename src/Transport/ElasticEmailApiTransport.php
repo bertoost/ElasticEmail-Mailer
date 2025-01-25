@@ -32,9 +32,9 @@ class ElasticEmailApiTransport extends AbstractApiTransport
 
     public function __construct(
         string $apiKey,
-        HttpClientInterface $client = null,
-        EventDispatcherInterface $dispatcher = null,
-        LoggerInterface $logger = null
+        ?HttpClientInterface $client = null,
+        ?EventDispatcherInterface $dispatcher = null,
+        ?LoggerInterface $logger = null
     ) {
         $this->api = new EmailsApi(
             new Client(),
