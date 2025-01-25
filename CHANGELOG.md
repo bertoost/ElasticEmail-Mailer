@@ -5,6 +5,7 @@
 ### Changed
 
 - Fix PHP 8.4 deprecation ([#2](https://github.com/bertoost/ElasticEmail-Mailer/pull/2))
+- Fix Issue with Symfony integration ([#3](https://github.com/bertoost/ElasticEmail-Mailer/issues/3))
 
 ## v1.1.0 - 2024-04-14
 
