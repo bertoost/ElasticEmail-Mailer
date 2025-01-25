@@ -1,5 +1,11 @@
 # Elastic Email Symfony Mailer Changelog
 
+## v1.1.1 - 2025-01-25
+
+### Changed
+
+- Fix PHP 8.4 deprecation ([#2](https://github.com/bertoost/ElasticEmail-Mailer/pull/2))
+
 ## v1.1.0 - 2024-04-14
 
 ### Changed
